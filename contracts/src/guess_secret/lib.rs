@@ -6,7 +6,7 @@ mod guess_secret {
 
     use ink::prelude::string::String;
     use sp_core::*;
-    use ink::prelude::{vec, vec::Vec};
+    use ink::prelude::{vec::Vec};
     const HASH_SIZE: usize = 16;
 
     #[ink(storage)]

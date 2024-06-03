@@ -1,12 +1,12 @@
 {
   "source": {
-    "hash": "0x405bb1e5c253833517f814020d6299705b7ffdbb628041506d5d09aa2cf9b465",
+    "hash": "0xdf56c5c8ad0b0168e7379e8a72df6c08915cf8cc74397c45e0ac72849415eb75",
     "language": "ink! 5.0.0",
-    "compiler": "rustc 1.77.1",
+    "compiler": "rustc 1.78.0",
     "build_info": {
       "build_mode": "Release",
-      "cargo_contract_version": "4.0.2",
-      "rust_toolchain": "stable-aarch64-apple-darwin",
+      "cargo_contract_version": "3.2.0",
+      "rust_toolchain": "stable-x86_64-unknown-linux-gnu",
       "wasm_opt_settings": {
         "keep_debug_symbols": false,
         "optimization_passes": "Z"
@@ -20,7 +20,6 @@
       "Scio Labs <hello@scio.xyz>"
     ]
   },
-  "image": null,
   "spec": {
     "constructors": [
       {

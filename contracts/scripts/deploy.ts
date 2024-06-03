@@ -4,7 +4,7 @@ import { writeContractAddresses } from '@/utils/writeContractAddresses'
 import { deployContract } from '@scio-labs/use-inkathon/helpers'
 
 /**
- * Script that deploys the greeter contract and writes its address to a file.
+ * Script that deploys the guess_secret contract and writes its address to a file.
  *
  * Parameters:
  *  - `DIR`: Directory to read contract build artifacts & write addresses to (optional, defaults to `./deployments`)
@@ -18,13 +18,33 @@ const main = async () => {
   const initParams = await initPolkadotJs()
   const { api, chain, account } = initParams
 
-  // Deploy greeter contract
-  const { abi, wasm } = await getDeploymentData('greeter')
-  const greeter = await deployContract(api, account, abi, wasm, 'default', [])
+  let hash = [
+    186,
+    120,
+    38,
+    210,
+    100,
+    23,
+    51,
+    120,
+    49,
+    64,
+    27,
+    30,
+    62,
+    55,
+    67,
+    140,
+];
 
+
+  // Deploy guess_secret contract
+  const { abi, wasm } = await getDeploymentData('guess_secret')
+  const guess_secret = await deployContract(api, account, abi, wasm, 'new', [hash])
+ 
   // Write contract addresses to `{contract}/{network}.ts` file(s)
   await writeContractAddresses(chain.network, {
-    greeter,
+    guess_secret,
   })
 }
 

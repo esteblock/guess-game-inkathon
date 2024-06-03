@@ -145,6 +145,7 @@ mod guess_secret {
             let number: u8 = 200;
             let my_salt = String::from("mysalt");
             let hash: [u8; 16] = hash_with_salt(number, my_salt);
+            dbg!(hash);
             let mut guess_secret = GuessSecret::new(hash);
 
             assert_eq!(guess_secret.winner(), None);

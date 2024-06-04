@@ -1,10 +1,12 @@
+# How to use.
 https://ui.use.ink/?rpc=wss://ws.test.azero.dev
 https://faucet.test.azero.dev/
 
-
-
-
-
+```bash
+cd contracts
+pnpm run build
+CHAIN=alephzero-testnet pnpm run deploy
+```
 
 
 

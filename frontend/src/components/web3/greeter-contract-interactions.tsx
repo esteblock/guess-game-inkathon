@@ -143,10 +143,14 @@ export const GreeterContractInteractions: FC = () => {
                 className="flex flex-col justify-end gap-2"
               >
                 <FormItem>
-                  <FormLabel className="text-base">Update Greeting</FormLabel>
+                  <FormLabel className="text-base">Guess your number!</FormLabel>
                   <FormControl>
                     <div className="flex gap-2">
-                      <Input disabled={form.formState.isSubmitting} {...register('newMessage')} />
+                      <Input
+                        type="number" // Set input type to number
+                        disabled={form.formState.isSubmitting}
+                        {...register('newMessage', { valueAsNumber: true, setValueAs: (value: string) => parseInt(value) })}
+                      />
                       <Button
                         type="submit"
                         className="bg-primary font-bold"
@@ -155,7 +159,7 @@ export const GreeterContractInteractions: FC = () => {
                       >
                         Submit
                       </Button>
-                    </div>
+                    </div>  
                   </FormControl>
                 </FormItem>
               </form>

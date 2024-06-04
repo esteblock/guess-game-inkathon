@@ -27,10 +27,13 @@ const formSchema = z.object({
 
 export const GreeterContractInteractions: FC = () => {
   const { api, activeAccount, activeSigner } = useInkathon()
-  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Greeter)
+  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.GuessSecret)
+  console.log(useRegisteredContract(ContractIds.Greeter))
+
   // const { typedContract } = useRegisteredTypedContract(ContractIds.Greeter, GreeterContract)
-  const [greeterMessage, setGreeterMessage] = useState<string>()
+  // const [greeterMessage, setGreeterMessage] = useState<string>()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>()
+  const [guesses, setGuesses] = useState<Array<Array<string>>>()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -38,22 +41,29 @@ export const GreeterContractInteractions: FC = () => {
   const { register, reset, handleSubmit } = form
 
   // Fetch Greeting
-  const fetchGreeting = async () => {
+  const getchGuesses = async () => {
+
     if (!contract || !api) return
 
     setFetchIsLoading(true)
     try {
-      const result = await contractQuery(api, '', contract, 'greet')
-      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'greet')
+      const result = await contractQuery(api, '', contract, 'guesses')
+      console.log("result", result);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'guesses')
+      // console.log("🚀 ~ getchGuesses ~ decodedOutput:", decodedOutput)
+      // console.log("🚀 ~ getchGuesses ~ isError:", isError)
+      // console.log("🚀 ~ getchGuesses ~ output:", output)
+      
       if (isError) throw new Error(decodedOutput)
-      setGreeterMessage(output)
+      setGuesses(output)
+      // setGreeterMessage(output)
 
       // NOTE: Currently disabled until `typechain-polkadot` dependencies are upted to support ink! v5
       // Alternatively: Fetch it with typed contract instance
       // const typedResult = await typedContract.query.greet()
       // console.log('Result from typed contract: ', typedResult.value)
     } catch (e) {
-      console.error(e)
+      console.error(e)  
       toast.error('Error while fetching greeting. Try again…')
       setGreeterMessage(undefined)
     } finally {
@@ -61,7 +71,7 @@ export const GreeterContractInteractions: FC = () => {
     }
   }
   useEffect(() => {
-    fetchGreeting()
+    getchGuesses()
   }, [contract])
 
   // Update Greeting
@@ -79,7 +89,7 @@ export const GreeterContractInteractions: FC = () => {
     } catch (e) {
       console.error(e)
     } finally {
-      fetchGreeting()
+      getchGuesses()
     }
   }
 
@@ -88,25 +98,44 @@ export const GreeterContractInteractions: FC = () => {
   return (
     <>
       <div className="flex max-w-[22rem] grow flex-col gap-4">
-        <h2 className="text-center font-mono text-gray-400">Greeter Smart Contract</h2>
+        <h2 className="text-center font-mono text-gray-400">Guess Secret Smart Contrct</h2>
 
         <Form {...form}>
-          {/* Fetched Greeting */}
+          
           <Card>
             <CardContent className="pt-6">
               <FormItem>
-                <FormLabel className="text-base">Fetched Greeting</FormLabel>
+                <FormLabel className="text-base">Guesses</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={fetchIsLoading || !contract ? 'Loading…' : greeterMessage}
-                    disabled={true}
-                  />
+                  {guesses ? (
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Guess</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {guesses.map((guess, index) => (
+                          <tr key={index}>
+                            <td>{guess[1]}</td>
+                            <td className="pl-8">{guess[2]}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <Input
+                      placeholder={fetchIsLoading || !contract ? 'Loading…' : ''}
+                      disabled={true}
+                    />
+                  )}
                 </FormControl>
               </FormItem>
             </CardContent>
           </Card>
 
-          {/* Update Greeting */}
+        
           <Card>
             <CardContent className="pt-6">
               <form

@@ -1,3 +1,12 @@
+https://ui.use.ink/?rpc=wss://ws.test.azero.dev
+
+
+
+
+
+
+
+
 ![inkathon Devtooling Banner](inkathon-devtooling-banner.png)
 
 # ink!athon Boilerplate

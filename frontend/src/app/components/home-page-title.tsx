@@ -5,7 +5,8 @@ import { AnchorHTMLAttributes, FC } from 'react'
 import githubIcon from 'public/icons/github-button.svg'
 import telegramIcon from 'public/icons/telegram-button.svg'
 import vercelIcon from 'public/icons/vercel-button.svg'
-import inkathonLogo from 'public/images/inkathon-logo.png'
+// import inkathonLogo from 'public/images/inkathon-logo.png'
+import paltaLabsLogo from 'public/images/paltalabs-logo.png'
 
 import { cn } from '@/utils/cn'
 
@@ -27,11 +28,11 @@ const StyledIconLink: React.FC<StyledIconLinkProps> = ({ className, children, ..
 )
 
 export const HomePageTitle: FC = () => {
-  const title = 'ink!athon'
-  const desc = 'Full-Stack DApp Boilerplate for ink! Smart Contracts'
-  const githubHref = 'https://github.com/scio-labs/inkathon'
+  const title = '   x   Guess a Secret'
+  const desc = 'Win a PaltaLabs 🥑 T-shirt'
+  const githubHref = 'https://github.com/esteblock/guess-game-inkathon'
   const deployHref = 'https://github.com/scio-labs/inkathon#deployment-'
-  const telegramHref = 'https://t.me/inkathon'
+  const telegramHref = 'https://t.me/esteblock'
 
   return (
     <>
@@ -43,14 +44,22 @@ export const HomePageTitle: FC = () => {
           // className="group"
           className="group flex cursor-pointer items-center gap-4 rounded-3xl px-3.5 py-1.5 transition-all hover:bg-gray-900"
         >
-          <Image src={inkathonLogo} priority width={60} alt="ink!athon Logo" />
+          <Image src={paltaLabsLogo} priority width={300} alt="paltaLabs Logo" />
           <h1 className="text-[2.5rem] font-black tracking-tighter">{title}</h1>
         </Link>
 
         {/* Tagline & Lincks */}
         <p className="mb-2 mt-4 text-gray-400">{desc}</p>
         <p className="mb-8 text-xs text-gray-600">
-          Built by{' '}
+        Built by by{' '}
+          <a
+            href="https://esteban.paltalabs.io"
+            target="_blank"
+            className="font-semibold text-gray-600 hover:text-gray-300"
+          >
+            esteblock
+          </a>{' '}
+          on top of the BoilerPlate built by {' '}
           <a
             href="https://zoma.dev"
             target="_blank"

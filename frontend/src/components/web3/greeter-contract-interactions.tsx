@@ -22,7 +22,8 @@ import { Input } from '@/components/ui/input'
 import { contractTxWithToast } from '@/utils/contract-tx-with-toast'
 
 const formSchema = z.object({
-  newMessage: z.string().min(1).max(90),
+  myGuess: z.string().min(1).max(90),
+  myName: z.string(),
 })
 
 export const GreeterContractInteractions: FC = () => {
@@ -75,15 +76,23 @@ export const GreeterContractInteractions: FC = () => {
   }, [contract])
 
   // Update Greeting
-  const updateGreeting: SubmitHandler<z.infer<typeof formSchema>> = async ({ newMessage }) => {
+  const submitGuess: SubmitHandler<z.infer<typeof formSchema>> = async ({ myName, myGuess }) => {
+    console.log("🚀 ~ constsubmitGuess:SubmitHandler<z.infer<typeofformSchema>>= ~ myName:", myName)
+    console.log("🚀 ~ constsubmitGuess:SubmitHandler<z.infer<typeofformSchema>>= ~ myGuess:", myGuess)
+    
     if (!activeAccount || !contract || !activeSigner || !api) {
       toast.error('Wallet not connected. Try again…')
       return
     }
+    if (parseInt(myGuess) < 0 || parseInt(myGuess) > 90 ) {
+      toast.error('Number must be between 0 and 90…')
+      return
+    }
 
     try {
-      await contractTxWithToast(api, activeAccount.address, contract, 'setMessage', {}, [
-        newMessage,
+      await contractTxWithToast(api, activeAccount.address, contract, 'guess', {}, [
+        myName,
+        parseInt(myGuess),
       ])
       reset()
     } catch (e) {
@@ -138,36 +147,54 @@ export const GreeterContractInteractions: FC = () => {
         
           <Card>
             <CardContent className="pt-6">
-              <form
-                onSubmit={handleSubmit(updateGreeting)}
-                className="flex flex-col justify-end gap-2"
-              >
-                <FormItem>
-                  <FormLabel className="text-base">Guess your number!</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-2">
-                      <Input
-                        type="number" // Set input type to number
-                        disabled={form.formState.isSubmitting}
-                        {...register('newMessage', { valueAsNumber: true, setValueAs: (value: string) => parseInt(value) })}
-                      />
-                      <Button
-                        type="submit"
-                        className="bg-primary font-bold"
-                        disabled={fetchIsLoading || form.formState.isSubmitting}
-                        isLoading={form.formState.isSubmitting}
-                      >
-                        Submit
-                      </Button>
-                    </div>  
-                  </FormControl>
-                </FormItem>
-              </form>
-            </CardContent>
-          </Card>
-        </Form>
+            <form onSubmit={handleSubmit(submitGuess)} className="flex flex-col justify-end gap-2">
+      <FormItem>
+        <FormLabel className="text-base">Update Greeting</FormLabel>
+        <FormControl>
+          <div className="flex gap-2">
+            <Input
+              {...register('myName', {
+                required: true, // Ensure a value is entered
+              })}
+              disabled={form.formState.isSubmitting}
+              type="text"
+              placeholder="Name"
+            />
+            <Input
+              {...register('myGuess', {
+                required: true, // Ensure a value is entered
+                validate: (value) => {
+                  if (!/^[0-9]{1,2}$/.test(value)) {
+                    return 'Please enter a number between 0 and 90.';
+                  }
 
-        {/* Contract Address */}
+                  const numValue = parseInt(value, 10);
+                  if (numValue < 0 || numValue > 90) {
+                    return 'Number must be between 0 and 90.';
+                  }
+                },
+              })}
+              disabled={form.formState.isSubmitting}
+              placeholder='your guess'
+              type="number" // Set the input type to "number" for browser validation (optional)
+            />
+            <Button
+              type="submit"
+              className="bg-primary font-bold"
+              disabled={form.formState.isSubmitting || fetchIsLoading}
+              isLoading={form.formState.isSubmitting}
+            >
+              Submit
+            </Button>
+          </div>
+        </FormControl>
+      </FormItem>
+    </form>
+                    </CardContent>
+                    </Card>
+                  </Form>
+
+                  {/* Contract Address */}
         <p className="text-center font-mono text-xs text-gray-600">
           {contract ? contractAddress : 'Loading…'}
         </p>

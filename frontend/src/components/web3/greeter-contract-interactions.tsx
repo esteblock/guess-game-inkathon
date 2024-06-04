@@ -35,6 +35,7 @@ export const GreeterContractInteractions: FC = () => {
   // const [greeterMessage, setGreeterMessage] = useState<string>()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>()
   const [guesses, setGuesses] = useState<Array<Array<string>>>()
+  const [winner, setWinner] = useState<string>()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -71,8 +72,36 @@ export const GreeterContractInteractions: FC = () => {
       setFetchIsLoading(false)
     }
   }
+
+
+
+
+  // Fetch Winner
+  const getchWinner = async () => {
+
+    if (!contract || !api) return
+
+    setFetchIsLoading(true)
+    try {
+      const result = await contractQuery(api, '', contract, 'winner')
+      console.log("result", result);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'winner')
+      
+      if (isError) throw new Error(decodedOutput)
+        setWinner(output)
+
+    } catch (e) {
+      console.error(e)  
+      toast.error('Error while fetching greeting. Try again…')
+      setWinner(undefined)
+    } finally {
+      setFetchIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     getchGuesses()
+    getchWinner()
   }, [contract])
 
   // Update Greeting
@@ -144,57 +173,74 @@ export const GreeterContractInteractions: FC = () => {
             </CardContent>
           </Card>
 
-        
+          {/* Insert here card for new value called winner */}
           <Card>
             <CardContent className="pt-6">
-            <form onSubmit={handleSubmit(submitGuess)} className="flex flex-col justify-end gap-2">
-      <FormItem>
-        <FormLabel className="text-base">Update Greeting</FormLabel>
-        <FormControl>
-          <div className="flex gap-2">
-            <Input
-              {...register('myName', {
-                required: true, // Ensure a value is entered
-              })}
-              disabled={form.formState.isSubmitting}
-              type="text"
-              placeholder="Name"
-            />
-            <Input
-              {...register('myGuess', {
-                required: true, // Ensure a value is entered
-                validate: (value) => {
-                  if (!/^[0-9]{1,2}$/.test(value)) {
-                    return 'Please enter a number between 0 and 90.';
-                  }
+              <FormItem>
+                <FormLabel className="text-base">Winner</FormLabel>
+                <FormControl>
+                  {winner ? (
+                    <p>{winner} is the winner!</p>
+                  ) : (
+                    <p>No winner yet.</p>
+                  )}
+                </FormControl>
+              </FormItem>
+            </CardContent>
+          </Card>
+          {!winner && 
+          
+          <Card>
+            <CardContent className="pt-6">
+              <form onSubmit={handleSubmit(submitGuess)} className="flex flex-col justify-end gap-2">
+                <FormItem>
+                  <FormLabel className="text-base">Guess your number</FormLabel>
+                  <FormControl>
+                    <div className="flex gap-2">
+                      <Input
+                        {...register('myName', {
+                          required: true, // Ensure a value is entered
+                        })}
+                        disabled={form.formState.isSubmitting}
+                        type="text"
+                        placeholder="Name"
+                      />
+                      <Input
+                        {...register('myGuess', {
+                          required: true, // Ensure a value is entered
+                          validate: (value) => {
+                            if (!/^[0-9]{1,2}$/.test(value)) {
+                              return 'Please enter a number between 0 and 90.';
+                            }
 
-                  const numValue = parseInt(value, 10);
-                  if (numValue < 0 || numValue > 90) {
-                    return 'Number must be between 0 and 90.';
-                  }
-                },
-              })}
-              disabled={form.formState.isSubmitting}
-              placeholder='your guess'
-              type="number" // Set the input type to "number" for browser validation (optional)
-            />
-            <Button
-              type="submit"
-              className="bg-primary font-bold"
-              disabled={form.formState.isSubmitting || fetchIsLoading}
-              isLoading={form.formState.isSubmitting}
-            >
-              Submit
-            </Button>
-          </div>
-        </FormControl>
-      </FormItem>
-    </form>
-                    </CardContent>
-                    </Card>
-                  </Form>
+                            const numValue = parseInt(value, 10);
+                            if (numValue < 0 || numValue > 90) {
+                              return 'Number must be between 0 and 90.';
+                            }
+                          },
+                        })}
+                        disabled={form.formState.isSubmitting}
+                        placeholder='your guess'
+                        type="number" // Set the input type to "number" for browser validation (optional)
+                      />
+                      <Button
+                        type="submit"
+                        className="bg-primary font-bold"
+                        disabled={form.formState.isSubmitting || fetchIsLoading}
+                        isLoading={form.formState.isSubmitting}
+                      >
+                        Submit
+                      </Button>
+                    </div>
+                  </FormControl>
+                </FormItem>
+              </form>
+            </CardContent>
+          </Card>
+          }
+        </Form>
 
-                  {/* Contract Address */}
+        {/* Contract Address */}
         <p className="text-center font-mono text-xs text-gray-600">
           {contract ? contractAddress : 'Loading…'}
         </p>

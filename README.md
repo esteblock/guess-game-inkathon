@@ -1,4 +1,5 @@
 https://ui.use.ink/?rpc=wss://ws.test.azero.dev
+https://faucet.test.azero.dev/
 
 
 

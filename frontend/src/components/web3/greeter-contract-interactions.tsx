@@ -67,7 +67,7 @@ export const GreeterContractInteractions: FC = () => {
     } catch (e) {
       console.error(e)  
       toast.error('Error while fetching greeting. Try again…')
-      setGreeterMessage(undefined)
+      setGuesses(undefined)
     } finally {
       setFetchIsLoading(false)
     }
